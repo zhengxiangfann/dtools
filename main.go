@@ -2,10 +2,20 @@ package main
 
 import (
 	"dtools/models/admin"
+	"dtools/models/api"
+	"dtools/models/auth"
+	"dtools/models/code"
+	"dtools/models/env"
+	"dtools/models/group"
+	"dtools/models/role"
+	"dtools/models/template"
+
 	_ "dtools/routers"
 	"dtools/utils"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/patrickmn/go-cache"
 	"net/url"
 	"time"
@@ -28,20 +38,21 @@ func Init() {
 		dsn = dsn + "&loc=" + url.QueryEscape(timezone)
 	}
 
+	fmt.Println(dsn)
 	orm.RegisterDataBase("default", "mysql", dsn)
 
 	orm.RegisterModel(
+		new(auth.Auth),
+		new(role.Role),
+		new(role.RoleAuth),
 		new(admin.Admin),
-		//new(Role),
-		//		//new(RoleAuth),
-		//		//new(Admin),
-		//		//new(Group),
-		//		//new(Env),
-		//		//new(Code),
-		//		//new(ApiSource),
-		//		//new(ApiDetail),
-		//		//new(ApiPublic),
-		//		//new(Template),
+		new(group.Group),
+		new(env.Env),
+		new(code.Code),
+		new(api.ApiSource),
+		new(api.ApiDetail),
+		new(api.ApiPublic),
+		new(template.Template),
 	)
 	if beego.AppConfig.String("runmode") == "dev" {
 		orm.Debug = true
@@ -49,7 +60,6 @@ func Init() {
 }
 
 func main() {
-
 	Init()
 	utils.Che = cache.New(60*time.Minute, 120*time.Minute)
 	beego.Run()

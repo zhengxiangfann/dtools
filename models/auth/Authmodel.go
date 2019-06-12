@@ -29,7 +29,10 @@ func (a *Auth) TableName() string {
 func AuthGetList(page, pageSize int, filters ...interface{}) ([]*Auth, int64) {
 	offset := (page - 1) * pageSize
 	list := make([]*Auth, 0)
-	query := orm.NewOrm().QueryTable(models.TableName("uc_auth"))
+
+	//query := orm.NewOrm().QueryTable(models.TableName("uc_auth"))
+	query := orm.NewOrm().QueryTable("af_uc_auth")
+
 	if len(filters) > 0 {
 		l := len(filters)
 		for k := 0; k < l; k += 2 {
